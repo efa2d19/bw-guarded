@@ -1,23 +1,54 @@
 #!/usr/bin/env zsh
 
+local bw_session
 local SESSION_PATH='/var/root/.bw.session.gpg'
 local bw_exec="$(brew --prefix bitwarden-cli)/bin/bw"
 
+function _check_gpg_keys() {
+	if ! type 'gpg' &>/dev/null; then
+		echo 'No GPG installed...'
+		exit 1
+	fi
+	
+	if ! gpg --list-keys --with-colons 2>/dev/null |
+	  awk -F: '$1 == "pub" && ($2 == "u" || $2 == "f" || $2 == "m") { key_found=1 } END { if (! key_found  ) { exit 1 } }'; then
+		echo 'No active GPG keys found...'
+		exit 1
+	fi
+}
+
+function _get_bw_session() {
+	local error_msg=(
+		'Token not found, try to run'
+		'  bw --generate-session-key'
+	)
+	
+	bw_session="$(sudo gpg --decrypt ${SESSION_PATH} 2>/dev/null)"
+	sudo -k
+	[[ -n $bw_session ]] || { print -l "$error_msg[@]" && exit 1 }
+}
+
 case "$1" in
-'--init-session-key')
+'login'|'--generate-session-key')
 	"${bw_exec}" logout &>/dev/null
+	_check_gpg_keys
 	echo "$(${bw_exec} login ${BW_USER} --raw)" |
 	  gpg --encrypt -r "$BW_USER" |
 	  sudo tee "$SESSION_PATH" &>/dev/null
-	return
+	exit
+	;;
+'logout'|'config')
+	"${bw_exec}" "$@"
+	exit
 	;;
 '--help'|'-h')
 	"${bw_exec}" "$@"
-	echo '\nTo regenerate your session key type:'
-	echo '\tbw --init-session-key'
-	return
+	echo '\nTo generate your session key type:'
+	echo '  bw --generate-session-key'
+	exit
 	;;
 esac
 
-"${bw_exec}" "$@" --session "$(sudo gpg --decrypt ${SESSION_PATH} 2>/dev/null)"
+_get_bw_session
+"${bw_exec}" "$@" --session "$bw_session"
 return "$?"

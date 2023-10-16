@@ -35,7 +35,7 @@ Inspirations from [this gist](https://gist.github.com/mietzen/f383d87c0973c1af87
 To initialize or regenerate session key:
 
 ```bash
-bw --generate-session-ke
+bw --generate-session-key
 ```
 
 For all other Bitwarden CLI commands, simply use `bw`:

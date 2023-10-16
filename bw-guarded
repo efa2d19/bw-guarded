@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+local SESSION_PATH='/var/root/.bw.session.gpg'
+local bw_exec="$(brew --prefix bitwarden-cli)/bin/bw"
+
+case "$1" in
+'--init-session-key')
+	"${bw_exec}" logout &>/dev/null
+	echo "$(${bw_exec} login ${BW_USER} --raw)" |
+	  gpg --encrypt -r "$BW_USER" |
+	  sudo tee "$SESSION_PATH" &>/dev/null
+	return
+	;;
+'--help'|'-h')
+	"${bw_exec}" "$@"
+	echo '\nTo regenerate your session key type:'
+	echo '\tbw --init-session-key'
+	return
+	;;
+esac
+
+"${bw_exec}" "$@" --session "$(sudo gpg --decrypt ${SESSION_PATH} 2>/dev/null)"
+return "$?"

@@ -24,8 +24,7 @@ function _get_bw_session() {
 	)
 	
 	bw_session="$(sudo gpg --decrypt ${SESSION_PATH} 2>/dev/null)"
-	sudo -k
-	[[ -n $bw_session ]] || { print -l "$error_msg[@]" && exit 1 }
+	[[ -n $bw_session ]] || { print -l "$error_msg[@]"; sudo -k; exit 1 }
 }
 
 case "$1" in

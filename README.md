@@ -11,7 +11,7 @@ Inspirations from [this gist](https://gist.github.com/mietzen/f383d87c0973c1af87
 1. Tap the custom formula repository:
 
     ```bash
-    brew tap Drugsosos/bw-guarded
+    brew tap Drugsosos/tap
     ```
 
 2. Install `bw-guarded`:
@@ -24,6 +24,12 @@ Inspirations from [this gist](https://gist.github.com/mietzen/f383d87c0973c1af87
 
     ```bash
     brew unlink bitwarden-cli
+    ```
+
+4. Create GPG key if you don't have one
+
+    ```bash
+    gpg --full-generate-key
     ```
 
 ### 🔔 Optional but recommended

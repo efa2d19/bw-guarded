@@ -11,7 +11,7 @@ Inspirations from [this gist](https://gist.github.com/mietzen/f383d87c0973c1af87
 1. Tap the custom formula repository:
 
     ```bash
-    brew tap Drugsosos/tap
+    brew tap efa2d19/tap
     ```
 
 2. Install `bw-guarded`:

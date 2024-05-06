@@ -49,5 +49,5 @@ case "$1" in
 esac
 
 _get_bw_session
-"${bw_exec}" "$@" --session "$bw_session"
+BW_SESSION="$bw_session" "${bw_exec}" "$@"
 return "$?"
